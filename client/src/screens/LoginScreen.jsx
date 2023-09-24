@@ -1,4 +1,5 @@
 import {
+  Alert,
   Image,
   StyleSheet,
   Text,
@@ -10,12 +11,52 @@ import Button from "../components/Button";
 import { COLORS, RES } from "../constants/Theme";
 import React, { useState } from "react";
 import Input from "../components/Input";
+import { userLogin } from "../Api/Api";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const LoginScreen = ({ navigation }) => {
-  const [showPassword, setShowPassword] = useState(false);
 
+  const [showPassword, setShowPassword] = useState(false);
+const [email,setEmail]=useState("")
+const [password,setPasswod]=useState("")
   const handlePasswordChange = () => {
     setShowPassword(!showPassword);
   };
+
+  const handleEmail = (text) => {
+    setEmail(text);
+  };
+  const handlePassword = (text) => {
+    setPasswod(text);
+  };
+
+  const handleSubmit = async () => {
+    console.log("pressed");
+    try {
+      const response = await userLogin(email, password);
+      const token = response.data.token;
+      
+      // Save the token to AsyncStorage
+      await AsyncStorage.setItem('userToken', token);
+      
+      // Display a success alert
+      Alert.alert(
+        'Login Successfully',
+        '',
+        [
+          {
+            text: 'OK',
+            // onPress: () => console.log('OK Pressed'),
+            onPress:() => navigation.navigate("home")
+          },
+        ],
+        { cancelable: false }
+      );
+      
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <View style={styles.loginContainer}>
       <Image source={require("../assets/welcomeLogo.png")} />
@@ -54,8 +95,19 @@ const LoginScreen = ({ navigation }) => {
           )}
         </TouchableOpacity>
       </View> */}
-      <Input placeholder="Email" />
-      <Input placeholder="password"  />
+      <Input
+            name="email"
+            onChange={handleEmail}
+            value={email}
+            placeholder="Email"
+          />
+          <Text>{email}</Text>
+          <Input
+            name="password"
+            placeholder="password"
+            onChange={handlePassword}
+          />
+          <Text>{password}</Text>
       <Text style={styles.orText}>Or Continue with</Text>
       <View style={styles.mainIconContainer}>
         {/* <View style={styles.iconContainer}>
@@ -96,7 +148,8 @@ const LoginScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View> */}
       <Button
-        onPress={() => navigation.navigate("home")}
+        // onPress={() => navigation.navigate("home")}
+        onPress={handleSubmit}
         style={styles.loginBtnContainer}
         name="Login"
       />

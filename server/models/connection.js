@@ -1,6 +1,10 @@
 const mongoose= require('mongoose');
-mongoose.connect('mongodb://localhost:27017/foodNinja');
-const db=mongoose.connection;
+const dotenv=require('dotenv')
+dotenv.config();
+const mongodbUrl=process.env.mongoURI
+
+mongoose.connect(mongodbUrl,{ useNewUrlParser: true, useUnifiedTopology: true })
+const db=mongoose.connection
 db.once('open',()=>{
     console.log("Database connection established");
 })

@@ -9,7 +9,7 @@ import React, { useState } from "react";
 import { RES ,COLORS} from "../constants/Theme";
 import { Octicons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
-const Input = ({ onChange, style, placeholder }) => {
+const Input = ({ onChange, value,style, placeholder,name }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const handlePasswordChange = () => {
@@ -18,10 +18,13 @@ const Input = ({ onChange, style, placeholder }) => {
   return (
     <View style={styles.inputContainer}>
       <TextInput
+      name={name}
         style={styles.inputText}
         placeholder={placeholder}
         placeholderTextColor="#3B3B3B"
         secureTextEntry={!showPassword}
+        onChangeText={onChange}
+        value={value}
       />
      { placeholder==='password' && <TouchableOpacity>
         {showPassword ? (
